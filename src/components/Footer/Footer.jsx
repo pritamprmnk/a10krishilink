@@ -9,7 +9,7 @@ const Footer = () => {
         <div>
           <h2 className="flex items-center gap-2 cursor-pointer">
           <img src="/assets/logo.png" alt="logo" className="w-11 h-11 object-contain" />
-          <h1 className="font-semibold text-xl text-black">KrishiLink</h1>
+          <span className="font-semibold text-xl text-black">KrishiLink</span>
           </h2>
           <p className="text-gray-600 mt-3">
             KrishiLink is a modern web application that connects people in the agricultural sector such as farmers, traders, and consumers in one digital space.
