@@ -8,12 +8,14 @@ const Signup = () => {
 
     const handleSignup = (event) =>{
         event.preventDefault();
+        const name = event.target.name.value;
+        const photo = event.target.photo.value;
         const email = event.target.email.value;
         const password = event.target.password.value;
 
-        createUser(email,password)
-        .then(result =>{
-            console.log(result.user);
+        createUser(email, password, name, photo)
+        .then(user => {
+            console.log("Signup successful:", user);
             event.target.reset();
             navigate("/"); // signup success -> home page
         })
@@ -35,6 +37,18 @@ const Signup = () => {
               type="text"
               name="name"
               placeholder="Enter your full name"
+              required
+              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
+            />
+          </label>
+
+          <label className="block mb-3">
+            <span className="text-gray-700 font-medium">Photo URL</span>
+            <input
+              type="text"
+              name="photo"
+              placeholder="Enter your photo URL"
+              required
               className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
             />
           </label>
@@ -45,21 +59,21 @@ const Signup = () => {
               type="email"
               name="email"
               placeholder="Enter your email address"
+              required
               className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
             />
           </label>
 
-          <div className="mb-4">
+          <label className="block mb-4">
             <span className="text-gray-700 font-medium">Password</span>
-            <div className="relative mt-1">
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter password"
-                className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
-              />
-            </div>
-          </div>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              required
+              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
+            />
+          </label>
 
           <button className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600">
             Sign Up

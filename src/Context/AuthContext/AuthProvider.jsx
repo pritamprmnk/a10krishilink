@@ -4,7 +4,8 @@ import {
   createUserWithEmailAndPassword, 
   onAuthStateChanged, 
   signInWithEmailAndPassword, 
-  signOut 
+  signOut,
+  updateProfile
 } from 'firebase/auth';
 import { auth } from '../../Firebase/firebase.init';
 
@@ -12,8 +13,15 @@ const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
 
-  const createUser = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  // ✅ Create user with email, password, name & photo
+  const createUser = (email, password, name, photoURL) => {
+    return createUserWithEmailAndPassword(auth, email, password)
+      .then(result => {
+        return updateProfile(result.user, {
+          displayName: name,
+          photoURL: photoURL
+        }).then(() => result.user);
+      });
   };
 
   const signInUser = (email, password) => {
@@ -26,8 +34,8 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log("current user in auth state change", currentUser);
       setUser(currentUser);
+      console.log("Current user:", currentUser);
     });
 
     return () => unsubscribe();
