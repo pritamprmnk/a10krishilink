@@ -1,34 +1,81 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../../Firebase/firebase.init";
 
 const Signup = () => {
-    const { createUser } = useContext(AuthContext);
-    const navigate = useNavigate();
+  const { createUser, googleLogin } = useContext(AuthContext);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    const handleSignup = (event) =>{
-        event.preventDefault();
-        const name = event.target.name.value;
-        const photo = event.target.photo.value;
-        const email = event.target.email.value;
-        const password = event.target.password.value;
+  const validatePassword = (password) => {
+    if (!/[A-Z]/.test(password)) return "At least one uppercase letter required";
+    if (!/[a-z]/.test(password)) return "At least one lowercase letter required";
+    if (password.length < 6) return "Password must be at least 6 characters";
+    return "";
+  };
 
-        createUser(email, password, name, photo)
-        .then(user => {
-            console.log("Signup successful:", user);
-            event.target.reset();
-            navigate("/"); // signup success -> home page
-        })
-        .catch(error =>{
-            console.log(error);
-        })
+  const handleSignup = async (event) => {
+    event.preventDefault();
+
+    const name = event.target.name.value;
+    const photo = event.target.photo.value;
+    const email = event.target.email.value;
+    const password = event.target.password.value;
+
+    const validationError = validatePassword(password);
+    if (validationError) {
+      setError(validationError);
+      return;
     }
+
+    try {
+      // Create user
+      const result = await createUser(email, password);
+      const user = result.user;
+
+      // IMPORTANT: updateProfile must use auth.currentUser
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+        photoURL: photo,
+      });
+
+      // Reload to reflect changes
+      await auth.currentUser.reload();
+
+      // Save in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        name,
+        email,
+        photoURL: photo,
+      });
+
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      setError("Email already exists or invalid information!");
+    }
+  };
+
+  const handleGoogleSignup = () => {
+    googleLogin()
+      .then(() => navigate("/"))
+      .catch(() => setError("Google signup failed!"));
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-center mb-2 text-green-500">Create Your Account</h2>
-        <p className="text-center text-gray-500 mb-6">Join our community of farmers and buyers.</p>
+
+        <h2 className="text-2xl font-bold text-center mb-2 text-green-500">
+          Create Your Account
+        </h2>
+
+        {error && (
+          <p className="text-red-500 text-center mb-3">{error}</p>
+        )}
 
         <form onSubmit={handleSignup}>
           <label className="block mb-3">
@@ -36,9 +83,8 @@ const Signup = () => {
             <input
               type="text"
               name="name"
-              placeholder="Enter your full name"
               required
-              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
+              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4"
             />
           </label>
 
@@ -47,9 +93,8 @@ const Signup = () => {
             <input
               type="text"
               name="photo"
-              placeholder="Enter your photo URL"
               required
-              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
+              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4"
             />
           </label>
 
@@ -58,45 +103,42 @@ const Signup = () => {
             <input
               type="email"
               name="email"
-              placeholder="Enter your email address"
               required
-              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
+              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4"
             />
           </label>
 
-          <label className="block mb-4">
+          <label className="block mb-3">
             <span className="text-gray-700 font-medium">Password</span>
             <input
               type="password"
               name="password"
-              placeholder="Enter password"
               required
-              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
+              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4"
             />
           </label>
 
-          <button className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600">
+          <button className="w-full bg-green-500 text-white py-2 rounded-lg">
             Sign Up
           </button>
         </form>
 
-        <div className="my-3 text-center text-gray-400">OR</div>
+        <div className="my-4 text-center text-gray-400">OR</div>
 
-        <button className="w-full border py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-100 text-black">
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="Google"
-            className="w-5"
-          />
+        <button
+          onClick={handleGoogleSignup}
+          className="w-full border py-2 rounded-lg"
+        >
           Sign up with Google
         </button>
 
         <p className="text-center text-sm text-gray-500 mt-4">
           Already have an account?{" "}
-          <a href="/login" className="text-green-600 hover:underline">
+          <Link to="/login" className="text-green-600">
             Login
-          </a>
+          </Link>
         </p>
+
       </div>
     </div>
   );
