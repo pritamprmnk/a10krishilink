@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-export default function CreateCropPost() {
+export default function AddCrops() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({

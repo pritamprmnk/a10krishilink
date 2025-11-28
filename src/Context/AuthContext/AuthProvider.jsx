@@ -12,9 +12,10 @@ import { auth } from '../../Firebase/firebase.init';
 const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);   // 🔥 loading added
 
-  // ✅ Create user with email, password, name & photo
   const createUser = (email, password, name, photoURL) => {
+    setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password)
       .then(result => {
         return updateProfile(result.user, {
@@ -25,16 +26,19 @@ const AuthProvider = ({ children }) => {
   };
 
   const signInUser = (email, password) => {
+    setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
   const logout = () => {
+    setLoading(true);
     return signOut(auth);
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setLoading(false);                    // 🔥 loading finished
       console.log("Current user:", currentUser);
     });
 
@@ -43,6 +47,7 @@ const AuthProvider = ({ children }) => {
 
   const authInfo = {
     user,
+    loading,        // 🔥 send loading state
     createUser,
     signInUser,
     logout

@@ -1,9 +1,9 @@
-// Firebase init file
-
+// firebase.init.js
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+// Your Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyBzAMbLJUuolJofTTRdlt3hwFvbrn-53OY",
   authDomain: "a10-krishilink.firebaseapp.com",
@@ -13,7 +13,13 @@ const firebaseConfig = {
   appId: "1:865330352192:web:79c0b8936c2c4b0f9c8fa5"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+// Initialize Auth
 export const auth = getAuth(app);
-export const db = getFirestore(app);  // ✅ MUST EXPORT THIS
+
+// Initialize Firestore (IMPORTANT)
+export const db = getFirestore(app);
+
+export default app;
