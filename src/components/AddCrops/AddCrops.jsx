@@ -5,8 +5,10 @@ import toast from "react-hot-toast";
 export default function AddCrops() {
   const navigate = useNavigate();
 
+  const userEmail = "test@gmail.com"; 
+
   const [formData, setFormData] = useState({
-    name: "",
+    title: "",
     type: "Vegetable",
     pricePerUnit: "",
     unit: "kg",
@@ -14,12 +16,21 @@ export default function AddCrops() {
     description: "",
     location: "",
     image: null,
+    userEmail: userEmail,
   });
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (files) {
-      setFormData({ ...formData, image: files[0] });
+
+    if (files && files.length > 0) {
+      const file = files[0];
+
+      if (!["image/jpeg", "image/png"].includes(file.type)) {
+        toast.error("Only JPG or PNG images are allowed!");
+        return;
+      }
+
+      setFormData({ ...formData, image: file });
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -34,50 +45,56 @@ export default function AddCrops() {
     });
 
     try {
-      const res = await fetch("/api/crops", {
+      const res = await fetch("http://localhost:3000/allcrops", {
         method: "POST",
         body: data,
       });
 
       if (res.ok) {
         toast.success("Crop added successfully!");
-        navigate("/my-posts");
+
+        // Navigate delay so toast can be seen properly
+        setTimeout(() => {
+          navigate("/myposts");
+        }, 1000);
+
       } else {
-        toast.error("Error adding post");
+        const error = await res.json();
+        toast.error(error.message || "Failed to add crop");
       }
-    } catch (err) {
-      toast.error("Request failed");
+    } catch (error) {
+      toast.error("Server error");
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded-lg mt-6">
-      <h2 className="text-2xl font-bold mb-4 text-green-500">Create a New Crop Listing</h2>
+    <div className="max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-2xl mt-8 border text-black">
+      <h2 className="text-3xl font-bold mb-6 text-green-500">
+        Create a New Crop Listing
+      </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Name */}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
           <div>
-            <label className="block font-semibold text-gray-900">Name</label>
+            <label className="font-semibold">Crop Name</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="title"
               onChange={handleChange}
-              className="w-full border p-2 rounded focus:outline-none focus:border-green-400 text-gray-800"
-              placeholder="e.g., Heirloom Tomatoes"
+              placeholder="Enter crop name"
+              className="w-full border rounded-lg px-4 py-3 mt-2"
               required
             />
           </div>
 
-          {/* Type */}
           <div>
-            <label className="block font-semibold text-gray-900">Type</label>
+            <label className="font-semibold">Crop Type</label>
             <select
               name="type"
               value={formData.type}
               onChange={handleChange}
-              className="w-full border p-2 rounded focus:outline-none focus:border-green-400 text-gray-800 font-medium"
+              className="w-full border rounded-lg px-4 py-3 mt-2"
             >
               <option>Vegetable</option>
               <option>Fruit</option>
@@ -86,28 +103,25 @@ export default function AddCrops() {
             </select>
           </div>
 
-          {/* Price */}
           <div>
-            <label className="block font-semibold text-gray-900">Price per unit</label>
+            <label className="font-semibold">Price Per Unit</label>
             <input
               type="number"
               name="pricePerUnit"
-              value={formData.pricePerUnit}
               onChange={handleChange}
-              className="w-full border p-2 rounded focus:outline-none focus:border-green-400 text-gray-800 font-medium"
-              placeholder="e.g., 55"
+              placeholder="Price"
+              className="w-full border rounded-lg px-4 py-3 mt-2"
               required
             />
           </div>
 
-          {/* Unit */}
           <div>
-            <label className="block font-semibold text-gray-900">Unit</label>
+            <label className="font-semibold">Unit</label>
             <select
               name="unit"
               value={formData.unit}
               onChange={handleChange}
-              className="w-full border p-2 rounded focus:outline-none focus:border-green-400 text-gray-800 font-medium"
+              className="w-full border rounded-lg px-4 py-3 mt-2"
             >
               <option>kg</option>
               <option>ton</option>
@@ -115,75 +129,58 @@ export default function AddCrops() {
             </select>
           </div>
 
-          {/* Quantity */}
           <div>
-            <label className="block font-semibold text-gray-900">Estimated Quantity</label>
+            <label className="font-semibold">Quantity</label>
             <input
               type="number"
               name="quantity"
-              value={formData.quantity}
               onChange={handleChange}
-              className="w-full border p-2 rounded focus:outline-none focus:border-green-400 text-gray-800 font-medium"
-              placeholder="e.g., 1000"
+              placeholder="Quantity"
+              className="w-full border rounded-lg px-4 py-3 mt-2"
               required
             />
           </div>
 
-          {/* Location */}
           <div>
-            <label className="block font-semibold text-gray-900">Location</label>
+            <label className="font-semibold">Location</label>
             <input
               type="text"
               name="location"
-              value={formData.location}
               onChange={handleChange}
-              className="w-full border p-2 rounded focus:outline-none focus:border-green-400 text-gray-800 font-medium"
-              placeholder="e.g., Bogura"
+              placeholder="Enter location"
+              className="w-full border rounded-lg px-4 py-3 mt-2"
               required
             />
           </div>
         </div>
 
-        {/* Description */}
         <div>
-          <label className="block font-semibold text-gray-900">Description</label>
+          <label className="font-semibold">Description</label>
           <textarea
             name="description"
-            value={formData.description}
             onChange={handleChange}
-            className="w-full border p-2 h-24 rounded focus:outline-none focus:border-green-400 text-gray-800"
             placeholder="Write crop details..."
-            required
-          ></textarea>
-        </div>
-
-        {/* Image */}
-        <div>
-          <label className="block font-semibold text-gray-900">Upload Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleChange}
-            className="w-full border p-2 rounded focus:outline-none focus:border-green-400 text-gray-800 font-medium"
+            className="w-full border rounded-lg px-4 py-3 mt-2"
             required
           />
         </div>
 
-        <div className="flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="px-4 py-2 bg-gray-400 rounded text-white rounded hover:bg-gray-600"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Create Post
-          </button>
+        <div>
+          <label className="font-semibold">Upload Image</label>
+          <input
+            type="file"
+            accept="image/jpeg, image/png"
+            onChange={handleChange}
+            className="w-full border rounded-lg px-4 py-3 mt-2"
+            required
+          />
         </div>
+
+        <button
+          className="w-full py-3 bg-green-500 hover:bg-green-600 text-white text-lg rounded-lg"
+        >
+          Create Post
+        </button>
       </form>
     </div>
   );
