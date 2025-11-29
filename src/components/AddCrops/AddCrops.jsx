@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { AuthContext } from "../../Context/AuthContext/AuthContext";
 
 export default function AddCrops() {
   const navigate = useNavigate();
 
-  const userEmail = "test@gmail.com"; 
+  // get logged user
+  const { user } = useContext(AuthContext);
+
+  const userEmail = user?.email || "";
+  const userName = user?.displayName || "";
 
   const [formData, setFormData] = useState({
-    title: "",
+    name: "",
     type: "Vegetable",
     pricePerUnit: "",
     unit: "kg",
@@ -16,7 +21,6 @@ export default function AddCrops() {
     description: "",
     location: "",
     image: null,
-    userEmail: userEmail,
   });
 
   const handleChange = (e) => {
@@ -39,10 +43,21 @@ export default function AddCrops() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!userEmail) {
+      toast.error("Please login first!");
+      return;
+    }
+
     const data = new FormData();
+
+    // append all fields correctly
     Object.keys(formData).forEach((key) => {
       data.append(key, formData[key]);
     });
+
+    // append logged-in data
+    data.append("userEmail", userEmail);
+    data.append("userName", userName);
 
     try {
       const res = await fetch("http://localhost:3000/allcrops", {
@@ -50,17 +65,13 @@ export default function AddCrops() {
         body: data,
       });
 
+      const result = await res.json();
+
       if (res.ok) {
         toast.success("Crop added successfully!");
-
-        // Navigate delay so toast can be seen properly
-        setTimeout(() => {
-          navigate("/myposts");
-        }, 1000);
-
+        setTimeout(() => navigate("/myposts"), 1000);
       } else {
-        const error = await res.json();
-        toast.error(error.message || "Failed to add crop");
+        toast.error(result.message || "Failed to add crop");
       }
     } catch (error) {
       toast.error("Server error");
@@ -80,7 +91,7 @@ export default function AddCrops() {
             <label className="font-semibold">Crop Name</label>
             <input
               type="text"
-              name="title"
+              name="name"
               onChange={handleChange}
               placeholder="Enter crop name"
               className="w-full border rounded-lg px-4 py-3 mt-2"
@@ -176,9 +187,7 @@ export default function AddCrops() {
           />
         </div>
 
-        <button
-          className="w-full py-3 bg-green-500 hover:bg-green-600 text-white text-lg rounded-lg"
-        >
+        <button className="w-full py-3 bg-green-500 hover:bg-green-600 text-white text-lg rounded-lg">
           Create Post
         </button>
       </form>

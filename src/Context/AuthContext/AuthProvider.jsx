@@ -1,56 +1,76 @@
-import React, { useEffect, useState } from 'react';
-import { AuthContext } from './AuthContext';
+import React, { useState, useEffect } from "react";
+import { AuthContext } from "./AuthContext";
 import { 
-  createUserWithEmailAndPassword, 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
   signOut,
   updateProfile
-} from 'firebase/auth';
-import { auth } from '../../Firebase/firebase.init';
+} from "firebase/auth";
+import { auth } from "../../Firebase/firebase.init";
 
 const AuthProvider = ({ children }) => {
-
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);   // 🔥 loading added
+  const [loading, setLoading] = useState(true);
 
-  const createUser = (email, password, name, photoURL) => {
+  /* --------------------------------------------------
+      Create User (Signup)
+  -------------------------------------------------- */
+  const createUser = async (email, password, name, photoURL) => {
     setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password)
-      .then(result => {
-        return updateProfile(result.user, {
-          displayName: name,
-          photoURL: photoURL
-        }).then(() => result.user);
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+
+    // update profile
+    if (name || photoURL) {
+      await updateProfile(result.user, {
+        displayName: name,
+        photoURL: photoURL,
       });
+    }
+
+    return result.user;
   };
 
+  /* --------------------------------------------------
+      Login User
+  -------------------------------------------------- */
   const signInUser = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
+  /* --------------------------------------------------
+      Logout User
+  -------------------------------------------------- */
   const logout = () => {
     setLoading(true);
     return signOut(auth);
   };
 
+  /* --------------------------------------------------
+      Track Auth State
+  -------------------------------------------------- */
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setLoading(false);                    // 🔥 loading finished
-      console.log("Current user:", currentUser);
+      setLoading(false);
+
+      console.log("🔄 Current logged user:", currentUser);
     });
 
     return () => unsubscribe();
   }, []);
 
+  /* --------------------------------------------------
+      Context Value
+  -------------------------------------------------- */
   const authInfo = {
     user,
-    loading,        // 🔥 send loading state
+    loading,
     createUser,
     signInUser,
-    logout
+    logout,
+    setUser, // sometimes helpful
   };
 
   return (
