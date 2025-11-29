@@ -258,9 +258,9 @@ export default function MyPosts({ userEmail }) {
       <Dialog
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
       >
-        <div className="bg-white p-6 rounded-lg w-[400px] shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-md w-[400px] text-gray-900">
           <h2 className="text-2xl font-bold mb-4">Delete Post?</h2>
 
           <p className="mb-6 text-gray-700">
@@ -269,13 +269,13 @@ export default function MyPosts({ userEmail }) {
 
           <div className="flex justify-end gap-4">
             <button
-              className="px-4 py-2 bg-gray-500 text-white rounded"
+              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
               onClick={() => setDeleteModalOpen(false)}
             >
               Cancel
             </button>
             <button
-              className="px-4 py-2 bg-red-600 text-white rounded"
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
               onClick={confirmDelete}
             >
               Delete

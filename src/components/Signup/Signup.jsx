@@ -6,7 +6,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../Firebase/firebase.init";
 
 const Signup = () => {
-  const { createUser, googleLogin } = useContext(AuthContext);
+  const { createUser, signInWithGoogle } = useContext(AuthContext);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -60,7 +60,7 @@ const Signup = () => {
   };
 
   const handleGoogleSignup = () => {
-    googleLogin()
+    signInWithGoogle()
       .then(() => navigate("/"))
       .catch(() => setError("Google signup failed!"));
   };
@@ -83,8 +83,9 @@ const Signup = () => {
             <input
               type="text"
               name="name"
+              placeholder="Enter your name"
               required
-              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4"
+              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
             />
           </label>
 
@@ -93,8 +94,9 @@ const Signup = () => {
             <input
               type="text"
               name="photo"
+              placeholder="Upload your photo url"
               required
-              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4"
+              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
             />
           </label>
 
@@ -103,8 +105,9 @@ const Signup = () => {
             <input
               type="email"
               name="email"
+              placeholder="Enter your email"
               required
-              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4"
+              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
             />
           </label>
 
@@ -113,8 +116,9 @@ const Signup = () => {
             <input
               type="password"
               name="password"
+              placeholder="Enter your password"
               required
-              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4"
+              className="w-full border rounded-lg px-4 py-3 mt-2 mb-4 focus:outline-none focus:border-green-400 text-gray-800"
             />
           </label>
 
@@ -127,9 +131,14 @@ const Signup = () => {
 
         <button
           onClick={handleGoogleSignup}
-          className="w-full border py-2 rounded-lg"
+          className="w-full border py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-100 text-black"
         >
-          Sign up with Google
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            className="w-5"
+            alt="Google"
+          />
+          Login with Google
         </button>
 
         <p className="text-center text-sm text-gray-500 mt-4">

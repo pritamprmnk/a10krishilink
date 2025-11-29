@@ -3,7 +3,7 @@ import { AuthContext } from "../../Context/AuthContext/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
-  const { signInUser, googleLogin } = useContext(AuthContext);
+  const { signInUser, signInWithGoogle } = useContext(AuthContext);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ export default function Login() {
   };
 
   const handleGoogleLogin = () => {
-    googleLogin()
+    signInWithGoogle()
       .then(() => navigate("/"))
       .catch(() => setError("Google login failed!"));
   };
