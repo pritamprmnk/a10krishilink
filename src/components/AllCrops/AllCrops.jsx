@@ -26,7 +26,7 @@ export default function AllCropsPage() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto text-gray-900 bg-white">
-      <h1 className="text-3xl font-bold mb-6">All Crops</h1>
+      <h1 className="text-3xl font-bold mb-6 text-green-500">All Crops</h1>
 
       <input
         type="text"
@@ -44,7 +44,7 @@ export default function AllCropsPage() {
           {filteredCrops.map((crop) => (
             <div
               key={crop._id}
-              className="bg-white rounded-2xl shadow-lg border 
+              className="bg-white rounded-2xl shadow-lg  
                          overflow-hidden transition-transform duration-300 
                          hover:scale-[1.03] hover:shadow-xl"
             >

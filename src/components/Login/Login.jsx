@@ -13,11 +13,11 @@ export default function Login() {
     const password = event.target.password.value;
 
     signInUser(email, password)
-      .then((result) => {
+      .then(() => {
         event.target.reset();
         navigate("/"); // success
       })
-      .catch((error) => {
+      .catch(() => {
         setError("Invalid email or password!");
       });
   };
@@ -59,12 +59,13 @@ export default function Login() {
             required
           />
 
-          <button
-            type="button"
-            className="text-sm text-green-600 hover:underline mb-4"
-          >
-            Forgot Password?
-          </button>
+            {/* Forgot Password Link */}
+                <Link
+                    className="text-sm text-teal-600 mb-4 mt-2 inline-block"
+                    to="/forgot"
+                    state={{}}>Forgot Password?
+                </Link>
+
 
           <button
             type="submit"

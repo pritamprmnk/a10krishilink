@@ -8,8 +8,8 @@ export default function LatestCrops() {
     fetch("http://localhost:3000/allcrops")
       .then((res) => res.json())
       .then((data) => {
-
-        const lastSix = data.slice(-6).reverse();
+        // Backend already sorted newest → oldest
+        const lastSix = data.slice(0, 6);
         setLatestCrops(lastSix);
       })
       .catch((err) => console.error(err));
@@ -34,7 +34,7 @@ export default function LatestCrops() {
             />
 
             <div className="p-5">
-              <h3 className="font-semibold text-lg">{crop.name}</h3>
+              <h3 className="font-semibold text-lg text-black">{crop.name}</h3>
 
               <p className="text-sm text-gray-600 mt-1">
                 Quantity: {crop.quantity} {crop.unit}
@@ -44,7 +44,7 @@ export default function LatestCrops() {
                 Location: {crop.location}
               </p>
 
-              <Link to={`/cropsdetails/${crop._id}`}>
+              <Link to={`/crop/${crop._id}`}>
                 <button className="mt-4 w-full bg-green-200 hover:bg-green-300 transition-colors text-black font-medium py-2 rounded-md">
                   View Details
                 </button>

@@ -6,7 +6,6 @@ import { AuthContext } from "../../Context/AuthContext/AuthContext";
 export default function AddCrops() {
   const navigate = useNavigate();
 
-  // get logged user
   const { user } = useContext(AuthContext);
 
   const userEmail = user?.email || "";
@@ -50,12 +49,10 @@ export default function AddCrops() {
 
     const data = new FormData();
 
-    // append all fields correctly
     Object.keys(formData).forEach((key) => {
       data.append(key, formData[key]);
     });
 
-    // append logged-in data
     data.append("userEmail", userEmail);
     data.append("userName", userName);
 
@@ -73,16 +70,14 @@ export default function AddCrops() {
       } else {
         toast.error(result.message || "Failed to add crop");
       }
-    } catch (error) {
+    } catch {
       toast.error("Server error");
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-2xl mt-8 border text-black">
-      <h2 className="text-3xl font-bold mb-6 text-green-500">
-        Create a New Crop Listing
-      </h2>
+    <div className="max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-2xl mt-8 text-black">
+      <h2 className="text-3xl font-bold mb-6 text-green-500">Create a New Crop Listing</h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -163,6 +158,7 @@ export default function AddCrops() {
               required
             />
           </div>
+
         </div>
 
         <div>
