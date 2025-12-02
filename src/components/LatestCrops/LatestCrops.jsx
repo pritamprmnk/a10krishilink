@@ -8,7 +8,6 @@ export default function LatestCrops() {
     fetch("http://localhost:3000/allcrops")
       .then((res) => res.json())
       .then((data) => {
-        // Backend already sorted newest → oldest
         const lastSix = data.slice(0, 6);
         setLatestCrops(lastSix);
       })

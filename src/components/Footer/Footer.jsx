@@ -1,4 +1,5 @@
-import { FaFacebookF, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { X } from "lucide-react";
+import { FaFacebookF, FaInstagram, FaLinkedin,  } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -56,7 +57,7 @@ const Footer = () => {
 
           <div className="flex gap-5 text-gray-600">
             <FaFacebookF className="cursor-pointer hover:text-green-600" size={20} />
-            <FaTwitter className="cursor-pointer hover:text-green-600" size={20} />
+            <X className="cursor-pointer hover:text-green-600" size={20} />
             <FaLinkedin className="cursor-pointer hover:text-green-600" size={20} />
             <FaInstagram className="cursor-pointer hover:text-green-600" size={20} />
           </div>

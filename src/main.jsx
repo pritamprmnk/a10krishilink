@@ -1,27 +1,20 @@
-// main.jsx
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
 import Root from "./layout/Root.jsx";
 import Home from "./components/Home/Home.jsx";
 import Login from "./components/Login/Login.jsx";
 import Signup from "./components/Signup/Signup.jsx";
-
 import AuthProvider from "./Context/AuthContext/AuthProvider.jsx";
 import { AuthContext } from "./Context/AuthContext/AuthContext.jsx";
-
 import PrivetRoutes from "./Routes/PrivetRoutes.jsx";
-
 import MyPosts from "./components/MyPosts/MyPosts.jsx";
 import Profile from "./components/Profile/Profile.jsx";
 import MyInterests from "./components/MyInterests/MyInterests.jsx";
-
 import AllCrops from "./components/AllCrops/AllCrops.jsx";
 import AddCrops from "./components/AddCrops/AddCrops.jsx";
 import CropsDetails from "./Page/CropsDetails/CropsDetails.jsx";
-
 import { useContext } from "react";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword.jsx";
 

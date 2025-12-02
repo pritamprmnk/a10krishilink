@@ -11,21 +11,16 @@ import {
 } from "firebase/auth";
 import { auth } from "../../Firebase/firebase.init";
 
-
 const googleProvider = new GoogleAuthProvider();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  /* --------------------------------------------------
-      Create User (Signup)
-  -------------------------------------------------- */
   const createUser = async (email, password, name, photoURL) => {
     setLoading(true);
     const result = await createUserWithEmailAndPassword(auth, email, password);
 
-    // update profile
     if (name || photoURL) {
       await updateProfile(result.user, {
         displayName: name,
@@ -36,31 +31,21 @@ const AuthProvider = ({ children }) => {
     return result.user;
   };
 
-  /* --------------------------------------------------
-      Login User
-  -------------------------------------------------- */
   const signInUser = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-
-  const signInWithGoogle = () =>{
-    setLoading(true)
+  const signInWithGoogle = () => {
+    setLoading(true);
     return signInWithPopup(auth, googleProvider);
-  }
+  };
 
-  /* --------------------------------------------------
-      Logout User
-  -------------------------------------------------- */
   const logout = () => {
     setLoading(true);
     return signOut(auth);
   };
 
-  /* --------------------------------------------------
-      Track Auth State
-  -------------------------------------------------- */
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -72,9 +57,22 @@ const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  /* --------------------------------------------------
-      Context Value
-  -------------------------------------------------- */
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email: user.email,
+          displayName: user.displayName,
+          uid: user.uid,
+          photoURL: user.photoURL || null,
+        })
+      );
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
+
   const authInfo = {
     user,
     loading,
@@ -82,7 +80,7 @@ const AuthProvider = ({ children }) => {
     signInUser,
     signInWithGoogle,
     logout,
-    setUser, // sometimes helpful
+    setUser,
   };
 
   return (

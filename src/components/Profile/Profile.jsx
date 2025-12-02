@@ -27,7 +27,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-50 p-6 flex justify-center">
       <div className="w-full max-w-4xl bg-white shadow-lg rounded-xl p-8">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">My Profile</h1>
+        <h1 className="text-3xl font-bold mb-6 text-green-500"> My Profile</h1>
 
         {/* Top Section */}
         <div className="flex flex-col md:flex-row items-center justify-between border-b pb-6 gap-4 md:gap-0">

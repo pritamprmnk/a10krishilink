@@ -36,16 +36,13 @@ const Signup = () => {
       const result = await createUser(email, password);
       const user = result.user;
 
-      // IMPORTANT: updateProfile must use auth.currentUser
       await updateProfile(auth.currentUser, {
         displayName: name,
         photoURL: photo,
       });
 
-      // Reload to reflect changes
       await auth.currentUser.reload();
 
-      // Save in Firestore
       await setDoc(doc(db, "users", user.uid), {
         name,
         email,
