@@ -9,8 +9,11 @@ export default function MyInterests() {
   const { user, loading: authLoading } = useContext(AuthContext);
 
   const [interests, setInterests] = useState([]);
+  const [originalInterests, setOriginalInterests] = useState([]); // ⭐ original stored
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(null);
+
+  const [sortBy, setSortBy] = useState("latest"); // ⭐ sorting state
 
   const userEmail = user?.email || "";
 
@@ -25,11 +28,43 @@ export default function MyInterests() {
     setLoading(true);
     fetch(`${API_BASE}/myInterests/${encodeURIComponent(userEmail)}`)
       .then((res) => res.json())
-      .then((data) => setInterests(data || []))
+      .then((data) => {
+        setOriginalInterests(data || []);
+        setInterests(data || []);
+      })
       .catch(() => toast.error("Could not load your interests"))
       .finally(() => setLoading(false));
   }, [authLoading, userEmail]);
 
+  /* =================================================
+     SORTING FUNCTION
+  ================================================= */
+  useEffect(() => {
+    let sorted = [...originalInterests];
+
+    if (sortBy === "latest") {
+      sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    if (sortBy === "oldest") {
+      sorted.sort((a, b) => new Date(a.date) - new Date(b.date));
+    }
+
+    if (sortBy === "status") {
+      const order = { pending: 1, accepted: 2, rejected: 3 };
+      sorted.sort((a, b) => order[a.status] - order[b.status]);
+    }
+
+    if (sortBy === "az") {
+      sorted.sort((a, b) => a.cropName.localeCompare(b.cropName));
+    }
+
+    setInterests(sorted);
+  }, [sortBy, originalInterests]);
+
+  /* ================================================
+     STATUS BADGE COLORS
+  ================================================= */
   const badgeClass = (status) => {
     switch (status) {
       case "accepted":
@@ -62,7 +97,7 @@ export default function MyInterests() {
       const body = await resp.json();
       if (!resp.ok) throw new Error(body?.message);
 
-      setInterests((prev) => prev.filter((i) => i._id !== id));
+      setOriginalInterests((prev) => prev.filter((i) => i._id !== id));
       toast.success("Interest cancelled");
     } catch (err) {
       toast.error(err.message);
@@ -78,6 +113,20 @@ export default function MyInterests() {
       </h1>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
+
+        {/* SORTING DROPDOWN ⭐ */}
+        <div className="mb-5 flex justify-end">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="border px-4 py-2 rounded-md shadow-sm text-gray-700 bg-white"
+          >
+            <option value="latest">Latest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="status">Status (Pending → Accepted → Rejected)</option>
+            <option value="az">Crop Name A–Z</option>
+          </select>
+        </div>
 
         {/* LOADING STATES */}
         {authLoading ? (
