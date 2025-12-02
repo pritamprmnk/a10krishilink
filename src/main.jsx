@@ -17,6 +17,7 @@ import AddCrops from "./components/AddCrops/AddCrops.jsx";
 import CropsDetails from "./Page/CropsDetails/CropsDetails.jsx";
 import { useContext } from "react";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword.jsx";
+import ErrorPage from "./Page/ErrorPage.jsx";
 
 function MyPostsWrapper() {
   const { user } = useContext(AuthContext);
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
       { path: "login", Component: Login },
       { path: "signup", Component: Signup },
       { path: "allcrops", Component: AllCrops },
-      { path: "/forgot", Component: ForgotPassword},
+      { path: "/forgot", Component: ForgotPassword },
 
       {
         path: "myposts",
@@ -78,6 +79,9 @@ const router = createBrowserRouter([
           </PrivetRoutes>
         ),
       },
+
+      { path: "*", Component: ErrorPage },
+
     ],
   },
 ]);

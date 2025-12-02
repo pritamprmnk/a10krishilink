@@ -445,14 +445,14 @@ console.log("LS authUser: ", localStorage.getItem("authUser"));
 
             <div className="flex gap-3 justify-end">
               <button
-                className="px-4 py-2 rounded-md border"
+                className="px-4 py-2 rounded-md border bg-gray-400 text-white rounded-md hover:bg-gray-500 transition"
                 onClick={() => setShowConfirm(false)}
                 disabled={sendingInterest}
               >
                 Cancel
               </button>
               <button
-                className="px-4 py-2 bg-green-600 text-white rounded-md"
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
                 onClick={confirmAndSendInterest}
                 disabled={sendingInterest}
               >

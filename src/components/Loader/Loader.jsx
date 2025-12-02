@@ -1,18 +1,11 @@
 import React from "react";
-import "./Loader.css";
 
-const Loader = () => {
+export default function Loader() {
   return (
-    <div className="loader-wrapper">
-      <section className="dots-container">
-        <div className="dot" />
-        <div className="dot" />
-        <div className="dot" />
-        <div className="dot" />
-        <div className="dot" />
-      </section>
+    <div className="flex items-center justify-center space-x-2 py-6">
+      <span className="h-3 w-3 bg-green-500 rounded-full animate-bounce"></span>
+      <span className="h-3 w-3 bg-green-500 rounded-full animate-bounce [animation-delay:0.15s]"></span>
+      <span className="h-3 w-3 bg-green-500 rounded-full animate-bounce [animation-delay:0.3s]"></span>
     </div>
   );
-};
-
-export default Loader;
+}

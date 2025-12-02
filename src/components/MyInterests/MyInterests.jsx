@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../Context/AuthContext/AuthContext";
 import { Eye } from "lucide-react";
 import toast from "react-hot-toast";
+import Loader from "../Loader/Loader"; // ⭐ ADD THIS
 
 const API_BASE = import.meta?.env?.VITE_API_BASE || "http://localhost:3000";
 
@@ -9,12 +10,11 @@ export default function MyInterests() {
   const { user, loading: authLoading } = useContext(AuthContext);
 
   const [interests, setInterests] = useState([]);
-  const [originalInterests, setOriginalInterests] = useState([]); // ⭐ original stored
+  const [originalInterests, setOriginalInterests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(null);
 
-  const [sortBy, setSortBy] = useState("latest"); // ⭐ sorting state
-
+  const [sortBy, setSortBy] = useState("latest");
   const userEmail = user?.email || "";
 
   useEffect(() => {
@@ -36,10 +36,9 @@ export default function MyInterests() {
       .finally(() => setLoading(false));
   }, [authLoading, userEmail]);
 
-  /* =================================================
-     SORTING FUNCTION
-  ================================================= */
   useEffect(() => {
+    if (!originalInterests || originalInterests.length === 0) return;
+
     let sorted = [...originalInterests];
 
     if (sortBy === "latest") {
@@ -56,15 +55,14 @@ export default function MyInterests() {
     }
 
     if (sortBy === "az") {
-      sorted.sort((a, b) => a.cropName.localeCompare(b.cropName));
+      sorted.sort((a, b) =>
+        (a.cropName || "").localeCompare(b.cropName || "")
+      );
     }
 
     setInterests(sorted);
   }, [sortBy, originalInterests]);
 
-  /* ================================================
-     STATUS BADGE COLORS
-  ================================================= */
   const badgeClass = (status) => {
     switch (status) {
       case "accepted":
@@ -106,6 +104,15 @@ export default function MyInterests() {
     }
   };
 
+  // ⭐⭐⭐ GLOBAL FULL-SCREEN LOADER (Same as AllCropsPage)
+  if (loading || authLoading) {
+    return (
+      <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
     <div className="px-6 py-10">
       <h1 className="text-3xl font-bold mb-8 text-green-500 tracking-wide">
@@ -113,13 +120,11 @@ export default function MyInterests() {
       </h1>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
-
-        {/* SORTING DROPDOWN ⭐ */}
         <div className="mb-5 flex justify-end">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="border px-4 py-2 rounded-md shadow-sm text-gray-700 bg-white"
+            className="border py-2 rounded-md shadow-md text-gray-700 bg-white"
           >
             <option value="latest">Latest First</option>
             <option value="oldest">Oldest First</option>
@@ -128,20 +133,7 @@ export default function MyInterests() {
           </select>
         </div>
 
-        {/* LOADING STATES */}
-        {authLoading ? (
-          <div className="py-14 text-center text-gray-600 text-lg animate-pulse">
-            Loading account...
-          </div>
-        ) : !userEmail ? (
-          <div className="py-14 text-center text-gray-600 text-lg">
-            You must be signed in to view your interests.
-          </div>
-        ) : loading ? (
-          <div className="py-14 text-center text-gray-500 text-lg animate-pulse">
-            Loading...
-          </div>
-        ) : interests.length === 0 ? (
+        {interests.length === 0 ? (
           <div className="py-14 text-center text-gray-500 italic text-lg">
             You haven't shown interest in any crop yet.
           </div>
@@ -150,13 +142,27 @@ export default function MyInterests() {
             <table className="w-full table-auto">
               <thead>
                 <tr className="border-b bg-gray-50">
-                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">Crop</th>
-                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">Owner</th>
-                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">Qty</th>
-                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">Message</th>
-                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">Status</th>
-                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">Date</th>
-                  <th className="py-4 px-3 text-right text-gray-700 font-semibold">Actions</th>
+                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                    Crop
+                  </th>
+                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                    Owner
+                  </th>
+                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                    Qty
+                  </th>
+                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                    Message
+                  </th>
+                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                    Status
+                  </th>
+                  <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                    Date
+                  </th>
+                  <th className="py-4 px-3 text-right text-gray-700 font-semibold">
+                    Actions
+                  </th>
                 </tr>
               </thead>
 
@@ -166,13 +172,21 @@ export default function MyInterests() {
                     key={item._id}
                     className="border-b hover:bg-gray-100 transition-all duration-200"
                   >
-                    <td className="py-4 px-3 font-medium text-gray-900">{item.cropName}</td>
-                    <td className="py-4 px-3 text-gray-700">{item.sellerEmail}</td>
+                    <td className="py-4 px-3 font-medium text-gray-900">
+                      {item.cropName}
+                    </td>
+                    <td className="py-4 px-3 text-gray-700">
+                      {item.sellerEmail}
+                    </td>
                     <td className="py-4 px-3 text-gray-700">{item.quantity}</td>
                     <td className="py-4 px-3 text-gray-700">{item.message}</td>
 
                     <td className="py-4 px-3">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${badgeClass(item.status)}`}>
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${badgeClass(
+                          item.status
+                        )}`}
+                      >
                         {item.status}
                       </span>
                     </td>
@@ -197,7 +211,6 @@ export default function MyInterests() {
                         </button>
                       )}
                     </td>
-
                   </tr>
                 ))}
               </tbody>

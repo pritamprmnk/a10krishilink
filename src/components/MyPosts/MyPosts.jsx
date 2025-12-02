@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Dialog } from "@headlessui/react";
 import toast from "react-hot-toast";
+import Loader from "../Loader/Loader";
 
 export default function MyPosts({ userEmail }) {
   const [crops, setCrops] = useState([]);
@@ -80,14 +81,8 @@ export default function MyPosts({ userEmail }) {
       .catch(() => toast.error("Delete failed!"));
   };
 
-  // ---------------- UI ----------------
-
-  if (loading)
-    return (
-      <div className="text-center text-lg py-10 text-gray-600 animate-pulse">
-        Loading your posts...
-      </div>
-    );
+  // ⭐ GLOBAL LOADING
+  if (loading) return <Loader />;
 
   if (!loading && crops.length === 0)
     return (
@@ -107,13 +102,27 @@ export default function MyPosts({ userEmail }) {
           <table className="w-full table-auto">
             <thead>
               <tr className="border-b bg-gray-50">
-                <th className="py-4 px-3 text-left text-gray-700 font-semibold">Image</th>
-                <th className="py-4 px-3 text-left text-gray-700 font-semibold">Name</th>
-                <th className="py-4 px-3 text-left text-gray-700 font-semibold">Type</th>
-                <th className="py-4 px-3 text-left text-gray-700 font-semibold">Price</th>
-                <th className="py-4 px-3 text-left text-gray-700 font-semibold">Quantity</th>
-                <th className="py-4 px-3 text-left text-gray-700 font-semibold">Location</th>
-                <th className="py-4 px-3 text-right text-gray-700 font-semibold">Actions</th>
+                <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                  Image
+                </th>
+                <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                  Name
+                </th>
+                <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                  Type
+                </th>
+                <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                  Price
+                </th>
+                <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                  Quantity
+                </th>
+                <th className="py-4 px-3 text-left text-gray-700 font-semibold">
+                  Location
+                </th>
+                <th className="py-4 px-3 text-right text-gray-700 font-semibold">
+                  Actions
+                </th>
               </tr>
             </thead>
 
@@ -135,7 +144,9 @@ export default function MyPosts({ userEmail }) {
                     />
                   </td>
 
-                  <td className="py-4 px-3 font-medium text-gray-900">{crop.name}</td>
+                  <td className="py-4 px-3 font-medium text-gray-900">
+                    {crop.name}
+                  </td>
                   <td className="py-4 px-3 text-gray-700">{crop.type}</td>
                   <td className="py-4 px-3 text-gray-700">
                     {crop.pricePerUnit} / {crop.unit}
@@ -161,12 +172,11 @@ export default function MyPosts({ userEmail }) {
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       </div>
 
-      {/* ---------------- Edit Modal ---------------- */}
+      {/* EDIT MODAL */}
       <Dialog
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
@@ -176,9 +186,7 @@ export default function MyPosts({ userEmail }) {
           onSubmit={handleEditSubmit}
           className="bg-white p-8 rounded-2xl shadow-xl w-[420px]"
         >
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">
-            ✏️ Edit Crop
-          </h2>
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">✏️ Edit Crop</h2>
 
           <div className="space-y-3">
             {["name", "type", "location"].map((field) => (
@@ -189,10 +197,7 @@ export default function MyPosts({ userEmail }) {
                 className="w-full border p-3 rounded-lg"
                 value={selectedCrop?.[field]}
                 onChange={(e) =>
-                  setSelectedCrop({
-                    ...selectedCrop,
-                    [field]: e.target.value,
-                  })
+                  setSelectedCrop({ ...selectedCrop, [field]: e.target.value })
                 }
               />
             ))}
@@ -243,7 +248,7 @@ export default function MyPosts({ userEmail }) {
         </form>
       </Dialog>
 
-      {/* ---------------- Delete Modal ---------------- */}
+      {/* DELETE MODAL */}
       <Dialog
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
