@@ -1,16 +1,15 @@
-# React + Vite
+Project Name : KrishiLink
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Live URL : https://krishilink10.netlify.app/
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Five bullet points to feature my website :
+(i).A social agro networking platform where farmers, traders, and consumers can connect, share crop posts, and collaborate directly without a traditional e-commerce system.
 
-## React Compiler
+(ii). Users can post, browse, and manage agricultural items, with advanced search, detailed crop information, and interest submission features.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+(iii).Secure authentication system including email/password & Google login, with fully protected private routes and responsive UI.
 
-## Expanding the ESLint configuration
+(iv).Interest-based interaction system where buyers can send requests, and crop owners can accept/reject interests with real-time updates.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+(v).Modern, responsive, and user-friendly interface, built with a clean design, dynamic sections, and seamless navigation across all devices.
