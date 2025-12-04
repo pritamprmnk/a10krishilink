@@ -15,7 +15,7 @@ export default function Login() {
     signInUser(email, password)
       .then(() => {
         event.target.reset();
-        navigate("/"); // success
+        navigate("/");
       })
       .catch(() => {
         setError("Invalid email or password!");

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import Loader from "../Loader/Loader"; // ✅ YOUR LOADER COMPONENT
+import Loader from "../../components/Loader/Loader";
 
 export default function AllCropsPage() {
   const [cropsData, setCropsData] = useState([]);
@@ -9,7 +9,7 @@ export default function AllCropsPage() {
   useEffect(() => {
     setLoading(true);
 
-    fetch("http://localhost:3000/allcrops")
+    fetch("https://krishi-link-server-eight.vercel.app/allcrops")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -32,10 +32,9 @@ export default function AllCropsPage() {
     );
   }, [search, cropsData]);
 
-  // 🔥 GLOBAL LOADER COMPONENT (FULL SCREEN)
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="fixed inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm z-50">
         <Loader />
       </div>
     );
@@ -47,10 +46,10 @@ export default function AllCropsPage() {
 
       <input
         type="text"
-        placeholder="Search for crops..."
+        placeholder="🔍 Search for crops..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full p-3 border rounded-xl mb-6 shadow-sm 
+        className="w-full md:w-1/2 lg:w-1/4 p-3 bg-gray-50 rounded-xl mb-6 shadow-lg 
                    focus:outline-none focus:ring-2 focus:ring-green-400"
       />
 
@@ -61,13 +60,17 @@ export default function AllCropsPage() {
           {filteredCrops.map((crop) => (
             <div
               key={crop._id}
-              className="bg-white rounded-2xl shadow-lg  
-                       overflow-hidden transition-transform duration-300 
+              className="bg-white rounded-2xl shadow-lg overflow-hidden 
+                       transition-transform duration-300 
                        hover:scale-[1.03] hover:shadow-xl"
             >
               <div className="overflow-hidden rounded-t-2xl">
                 <img
-                  src={`http://localhost:3000/uploads/${crop.image}`}
+                  src={
+                    crop.image?.startsWith("data:image")
+                      ? crop.image
+                      : `data:image/jpeg;base64,${crop.image}`
+                  }
                   alt={crop.name}
                   className="w-full h-44 object-cover transition-transform 
                              duration-300 hover:scale-110"

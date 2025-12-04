@@ -2,9 +2,9 @@ import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../Context/AuthContext/AuthContext";
 import { Eye } from "lucide-react";
 import toast from "react-hot-toast";
-import Loader from "../Loader/Loader"; // ⭐ ADD THIS
+import Loader from "../Loader/Loader";
+const API_BASE = "https://krishi-link-server-eight.vercel.app";
 
-const API_BASE = import.meta?.env?.VITE_API_BASE || "http://localhost:3000";
 
 export default function MyInterests() {
   const { user, loading: authLoading } = useContext(AuthContext);
@@ -96,6 +96,7 @@ export default function MyInterests() {
       if (!resp.ok) throw new Error(body?.message);
 
       setOriginalInterests((prev) => prev.filter((i) => i._id !== id));
+      setInterests((prev) => prev.filter((i) => i._id !== id)); 
       toast.success("Interest cancelled");
     } catch (err) {
       toast.error(err.message);
@@ -104,7 +105,6 @@ export default function MyInterests() {
     }
   };
 
-  // ⭐⭐⭐ GLOBAL FULL-SCREEN LOADER (Same as AllCropsPage)
   if (loading || authLoading) {
     return (
       <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">

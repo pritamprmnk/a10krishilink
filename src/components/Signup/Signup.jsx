@@ -32,27 +32,31 @@ const Signup = () => {
     }
 
     try {
-      // Create user
       const result = await createUser(email, password);
       const user = result.user;
+        console.log("USER CREATED:", result.user);
 
-      await updateProfile(auth.currentUser, {
+      await updateProfile(user, {
         displayName: name,
         photoURL: photo,
       });
+        console.log("PROFILE UPDATED");
 
-      await auth.currentUser.reload();
 
       await setDoc(doc(db, "users", user.uid), {
         name,
         email,
         photoURL: photo,
       });
+        console.log("FIRESTORE SAVED");
+
+      // await auth.currentUser.reload();
 
       navigate("/");
+      
     } catch (error) {
-      console.error(error);
-      setError("Email already exists or invalid information!");
+  console.error("SIGNUP ERROR:", error.message);
+  setError(error.message);
     }
   };
 
@@ -119,7 +123,7 @@ const Signup = () => {
             />
           </label>
 
-          <button className="w-full bg-green-500 text-white py-2 rounded-lg">
+          <button className="w-full mt-2 bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition">
             Sign Up
           </button>
         </form>

@@ -28,7 +28,8 @@ const AuthProvider = ({ children }) => {
       });
     }
 
-    return result.user;
+    return { user: result.user };
+
   };
 
   const signInUser = (email, password) => {

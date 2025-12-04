@@ -6,7 +6,6 @@ import Loader from "../Loader/Loader";
 
 export default function AddCrops() {
   const navigate = useNavigate();
-
   const { user } = useContext(AuthContext);
 
   const userEmail = user?.email || "";
@@ -25,66 +24,98 @@ export default function AddCrops() {
     image: null,
   });
 
+
+const API_URL = "https://krishi-link-server-eight.vercel.app";
+
+
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (err) => reject(err);
+    });
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
     if (files && files.length > 0) {
       const file = files[0];
 
-      if (!["image/jpeg", "image/png"].includes(file.type)) {
+      if (!["image/jpeg", "image/png", "image/jpg"].includes(file.type)) {
         toast.error("Only JPG or PNG images are allowed!");
         return;
       }
 
-      setFormData({ ...formData, image: file });
+      setFormData((prev) => ({ ...prev, image: file }));
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!userEmail) {
       toast.error("Please login first!");
       return;
     }
 
-    setLoading(true); // 🔥 START LOADING
+    if (!formData.name || !formData.pricePerUnit || !formData.quantity || !formData.description || !formData.location) {
+      toast.error("Please fill all required fields.");
+      return;
+    }
 
-    const data = new FormData();
-
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
-
-    data.append("userEmail", userEmail);
-    data.append("userName", userName);
+    setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3000/allcrops", {
+      if (!formData.image) {
+        toast.error("Please select an image");
+        setLoading(false);
+        return;
+      }
+
+      const base64Img = await fileToBase64(formData.image);
+
+      const payload = {
+        name: formData.name,
+        type: formData.type,
+        pricePerUnit: formData.pricePerUnit,
+        unit: formData.unit,
+        quantity: formData.quantity,
+        description: formData.description,
+        location: formData.location,
+        image: base64Img,
+        userEmail,
+        userName,
+      };
+
+      const res = await fetch(`${API_URL}/allcrops`, {
         method: "POST",
-        body: data,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       const result = await res.json();
 
       if (res.ok) {
         toast.success("Crop added successfully!");
-        setTimeout(() => navigate("/myposts"), 1000);
+        setTimeout(() =>{
+        navigate("/myposts");
+        }, 1500);
+
       } else {
         toast.error(result.message || "Failed to add crop");
       }
-    } catch {
-      toast.error("Server error");
+    } catch (err) {
+      console.error("client error:", err);
+      toast.error("Server / network error");
     } finally {
-      setLoading(false); // 🔥 END LOADING
+      setLoading(false);
     }
   };
 
   return (
     <div className="relative">
-      {/* 🔥 Loader Overlay */}
       {loading && (
         <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
           <Loader />
@@ -92,9 +123,7 @@ export default function AddCrops() {
       )}
 
       <div className="max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-2xl mt-8 text-black">
-        <h2 className="text-3xl font-bold mb-6 text-green-500">
-          Create a New Crop Listing
-        </h2>
+        <h2 className="text-3xl font-bold mb-6 text-green-500">Create a New Crop Listing</h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -103,6 +132,7 @@ export default function AddCrops() {
               <input
                 type="text"
                 name="name"
+                value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter crop name"
                 className="w-full border rounded-lg px-4 py-3 mt-2"
@@ -130,6 +160,7 @@ export default function AddCrops() {
               <input
                 type="number"
                 name="pricePerUnit"
+                value={formData.pricePerUnit}
                 onChange={handleChange}
                 placeholder="Price"
                 className="w-full border rounded-lg px-4 py-3 mt-2"
@@ -156,6 +187,7 @@ export default function AddCrops() {
               <input
                 type="number"
                 name="quantity"
+                value={formData.quantity}
                 onChange={handleChange}
                 placeholder="Quantity"
                 className="w-full border rounded-lg px-4 py-3 mt-2"
@@ -168,6 +200,7 @@ export default function AddCrops() {
               <input
                 type="text"
                 name="location"
+                value={formData.location}
                 onChange={handleChange}
                 placeholder="Enter location"
                 className="w-full border rounded-lg px-4 py-3 mt-2"
@@ -180,6 +213,7 @@ export default function AddCrops() {
             <label className="font-semibold">Description</label>
             <textarea
               name="description"
+              value={formData.description}
               onChange={handleChange}
               placeholder="Write crop details..."
               className="w-full border rounded-lg px-4 py-3 mt-2"
@@ -191,6 +225,7 @@ export default function AddCrops() {
             <label className="font-semibold">Upload Image</label>
             <input
               type="file"
+              name="image"
               accept="image/jpeg, image/png"
               onChange={handleChange}
               className="w-full border rounded-lg px-4 py-3 mt-2"

@@ -10,7 +10,7 @@ export default function ReceivedInterests({ userEmail }) {
   useEffect(() => {
     if (!userEmail) return;
 
-    fetch(`http://localhost:3000/myinterests/${userEmail}`)
+    fetch(`https://krishi-link-server-eight.vercel.app/myinterests/${userEmail}`)
       .then((res) => res.json())
       .then((data) => {
         setInterests(data);
@@ -35,10 +35,9 @@ export default function ReceivedInterests({ userEmail }) {
     setInterests(sorted);
   };
 
-  /* ---------------- ACCEPT / REJECT ---------------- */
   const updateStatus = async (interest, newStatus) => {
     try {
-      await fetch("http://localhost:3000/interests/update-status", {
+      await fetch("https://krishi-link-server-eight.vercel.app/interests/update-status", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -50,7 +49,7 @@ export default function ReceivedInterests({ userEmail }) {
 
       if (newStatus === "accepted") {
         await fetch(
-          `http://localhost:3000/crops/update-quantity/${interest.cropId}`,
+          `https://krishi-link-server-eight.vercel.app/crops/update-quantity/${interest.cropId}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -90,7 +89,7 @@ export default function ReceivedInterests({ userEmail }) {
 
   return (
     <div className="p-10 text-gray-900">
-      {/* title */}
+
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-4xl font-bold">My Interests</h1>
 
@@ -105,7 +104,6 @@ export default function ReceivedInterests({ userEmail }) {
         </button>
       </div>
 
-      {/* table */}
       <div className="bg-white shadow-lg rounded-xl overflow-hidden">
         <table className="w-full text-left">
           <thead className="bg-gray-100 text-gray-800 text-lg">
@@ -121,13 +119,13 @@ export default function ReceivedInterests({ userEmail }) {
           <tbody className="text-lg text-gray-900">
             {interests.map((interest) => (
               <tr key={interest._id} className="border-t">
-                {/* Crop + Image */}
+
                 <td className="px-6 py-4 flex items-center gap-3 font-semibold">
                   <img
                     src={
                       interest.cropImage?.startsWith("http")
                         ? interest.cropImage
-                        : `http://localhost:3000/uploads/${interest.cropImage}`
+                        : `https://krishi-link-server-eight.vercel.app/uploads/${interest.cropImage}`
                     }
                     alt=""
                     className="w-14 h-14 rounded-lg object-cover"
@@ -141,10 +139,10 @@ export default function ReceivedInterests({ userEmail }) {
 
                 <td className="px-6 py-4">{interest.message}</td>
 
-                {/* Status badge + action buttons */}
+
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    {/* Status Badge */}
+
                     <span
                       className={`px-4 py-1 rounded-full text-white font-semibold
                         ${
@@ -161,7 +159,7 @@ export default function ReceivedInterests({ userEmail }) {
 
                     {interest.status === "pending" && (
                       <div className="flex gap-2">
-                        {/* Accept */}
+
                         <button
                           onClick={() => updateStatus(interest, "accepted")}
                           className="text-green-600 hover:text-green-800"
@@ -170,7 +168,6 @@ export default function ReceivedInterests({ userEmail }) {
                           <CheckCircle size={24} />
                         </button>
 
-                        {/* Reject */}
                         <button
                           onClick={() => updateStatus(interest, "rejected")}
                           className="text-red-600 hover:text-red-800"

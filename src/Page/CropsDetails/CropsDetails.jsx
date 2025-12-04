@@ -9,8 +9,10 @@ import {
   FileText,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import Loader from "../../components/Loader/Loader";
 
-const API_BASE = import.meta?.env?.VITE_API_BASE || "http://localhost:3000";
+
+const API_BASE = import.meta?.env?.VITE_API_BASE || "https://krishi-link-server-eight.vercel.app";
 
 export default function CropDetails() {
   const { id } = useParams();
@@ -50,7 +52,6 @@ export default function CropDetails() {
     return h;
   };
 
-// ---- FIXED OWNER CHECK ----
 const ownerEmail =
   crop?.userEmail || crop?.ownerEmail || crop?.owner?.ownerEmail || null;
 
@@ -137,13 +138,11 @@ const isOwner =
   const totalPrice =
     crop && parsedQuantity > 0 ? parsedQuantity * Number(crop.pricePerUnit) : 0;
 
-  const getImageUrl = (img) => {
-    if (!img) return "";
-    if (typeof img !== "string") return "";
-    if (img.startsWith("http://") || img.startsWith("https://")) return img;
+const getImageUrl = (img) => {
+  if (!img) return "";
+  return img;
+};
 
-    return `${API_BASE}/uploads/${img}`;
-  };
 
   const handleInterestSubmit = (e) => {
     e.preventDefault();
@@ -202,7 +201,6 @@ const isOwner =
 
       const created = await res.json();
 
-      // Update UI
       toast.success("Interest sent successfully!");
       setInterestForm({ quantity: "", message: "" });
       setAlreadySent(true);
@@ -282,8 +280,14 @@ const isOwner =
     }
   };
 
-  if (loading)
-    return <p className="text-center mt-20 text-gray-500">Loading...</p>;
+if (loading) {
+  return (
+    <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
+      <Loader />
+    </div>
+  );
+}
+
   if (!crop) return <p className="text-center mt-20">Crop not found</p>;
 
   const viewerAlreadySent =
@@ -305,14 +309,12 @@ console.log("LS authUser: ", localStorage.getItem("authUser"));
 
       {/* ---------- IMAGE & INFO SECTION ---------- */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* Image */}
         <img
           src={getImageUrl(crop.image)}
           alt={crop.name}
           className="w-full h-[420px] object-cover hover:scale-105 transition"
         />
 
-        {/* Info */}
         <div className="space-y-6">
           <h1 className="text-4xl font-extrabold tracking-wide">{crop.name}</h1>
 
@@ -330,7 +332,7 @@ console.log("LS authUser: ", localStorage.getItem("authUser"));
           <div className="flex items-center gap-3 text-lg font-medium">
             <Package className="text-indigo-600" />
             <span>
-              Available:{" "}
+              Available:{" "} 
               <span className="text-green-600 font-bold">{crop.quantity}</span>
             </span>
           </div>
@@ -347,7 +349,6 @@ console.log("LS authUser: ", localStorage.getItem("authUser"));
             </p>
           </div>
 
-          {/* Seller Info */}
           <div className="p-5 bg-gray-100 rounded-xl flex items-center gap-5 shadow-md">
             <div className="w-14 h-14 rounded-full bg-green-600 flex items-center justify-center text-white">
               <User size={30} />
@@ -361,7 +362,7 @@ console.log("LS authUser: ", localStorage.getItem("authUser"));
         </div>
       </div>
 
-      {/* ---------- INTEREST FORM (only for non-owner) ---------- */}
+      {/* ---------- INTEREST FORM  ---------- */}
       {crop && !isOwner && (
         <div className="mt-14 bg-white shadow-xl p-7 rounded-xl ">
           <h2 className="text-2xl font-bold mb-5 flex items-center gap-2">
@@ -397,7 +398,6 @@ console.log("LS authUser: ", localStorage.getItem("authUser"));
                 required
               ></textarea>
 
-              {/* Total Price display (auto-calculated) */}
               <div className="flex items-center justify-between border p-3 rounded-lg">
                 <div>
                   <p className="text-sm text-gray-500">Total Price</p>
@@ -425,7 +425,6 @@ console.log("LS authUser: ", localStorage.getItem("authUser"));
         </div>
       )}
 
-      {/* ---------- Confirmation Modal (simple) ---------- */}
       {showConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
@@ -463,7 +462,7 @@ console.log("LS authUser: ", localStorage.getItem("authUser"));
         </div>
       )}
 
-      {/* ---------- RECEIVED INTERESTS (Owner Only) ---------- */}
+      {/* ---------- RECEIVED INTERESTS  ---------- */}
       {isOwner && (
         <div className="mt-20">
           <h2 className="text-2xl font-bold mb-5">Received Interests</h2>
@@ -509,7 +508,7 @@ console.log("LS authUser: ", localStorage.getItem("authUser"));
                         </span>
                       </td>
                       <td className="p-4 flex gap-3">
-                        {/* Show actions only when pending */}
+
                         {i.status === "pending" ? (
                           <>
                             <button

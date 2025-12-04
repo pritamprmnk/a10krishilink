@@ -5,13 +5,13 @@ import AgriculturalNews from '../AgriculturalNews/AgriculturalNews';
 import Testimonials from '../Testimonials/Testimonials';
 import ModernTrade from '../ModernTrade/ModernTrade';
 import LatestCrops from '../LatestCrops/LatestCrops';
-import Loader from "../Loader/Loader"; // ✅ ADD THIS
+import Loader from "../Loader/Loader";
 
 const Home = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Simulate loading for page animation
+
         const timer = setTimeout(() => {
             setLoading(false);
         }, 800);
@@ -19,7 +19,6 @@ const Home = () => {
         return () => clearTimeout(timer);
     }, []);
 
-    // 🔥 GLOBAL LOADER COMPONENT
     if (loading) {
         return (
             <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">

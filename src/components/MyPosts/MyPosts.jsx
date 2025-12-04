@@ -15,7 +15,7 @@ export default function MyPosts({ userEmail }) {
   useEffect(() => {
     if (!userEmail) return;
 
-    fetch(`http://localhost:3000/mycrops/${userEmail}`)
+    fetch(`https://krishi-link-server-eight.vercel.app/mycrops/${userEmail}`)
       .then((res) => res.json())
       .then((data) => {
         setCrops(data);
@@ -43,7 +43,7 @@ export default function MyPosts({ userEmail }) {
       userEmail,
     };
 
-    fetch(`http://localhost:3000/allcrops/${selectedCrop._id}`, {
+    fetch(`https://krishi-link-server-eight.vercel.app/allcrops/${selectedCrop._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedData),
@@ -70,7 +70,7 @@ export default function MyPosts({ userEmail }) {
 
   const confirmDelete = () => {
     fetch(
-      `http://localhost:3000/allcrops/${selectedCrop._id}?email=${userEmail}`,
+      `https://krishi-link-server-eight.vercel.app/allcrops/${selectedCrop._id}?email=${userEmail}`,
       { method: "DELETE" }
     )
       .then(() => {
@@ -81,7 +81,6 @@ export default function MyPosts({ userEmail }) {
       .catch(() => toast.error("Delete failed!"));
   };
 
-  // ⭐ GLOBAL LOADING
   if (loading) return <Loader />;
 
   if (!loading && crops.length === 0)
@@ -135,10 +134,14 @@ export default function MyPosts({ userEmail }) {
                   <td className="py-3 px-3">
                     <img
                       src={
-                        crop.image?.startsWith("http")
+                        crop.image?.startsWith("data:image")
                           ? crop.image
-                          : `http://localhost:3000/uploads/${crop.image}`
+                          : `data:image/jpeg;base64,${crop.image}`
                       }
+
+
+
+
                       alt={crop.name}
                       className="w-16 h-16 rounded-xl object-cover shadow-sm"
                     />

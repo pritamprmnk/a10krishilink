@@ -1,18 +1,32 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Loader from "../../components/Loader/Loader";
 
 export default function LatestCrops() {
   const [latestCrops, setLatestCrops] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/allcrops")
+    fetch("https://krishi-link-server-eight.vercel.app/allcrops")
       .then((res) => res.json())
       .then((data) => {
         const lastSix = data.slice(0, 6);
         setLatestCrops(lastSix);
+        setLoading(false);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full flex justify-center py-16">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className="py-16 bg-[#F4F6F5]">
@@ -27,7 +41,11 @@ export default function LatestCrops() {
             className="bg-white shadow-md rounded-xl overflow-hidden border"
           >
             <img
-              src={`http://localhost:3000/uploads/${crop.image}`}
+              src={
+                crop.image?.startsWith("data:image")
+                  ? crop.image
+                  : `data:image/jpeg;base64,${crop.image}`
+              }
               alt={crop.name}
               className="h-48 w-full object-cover"
             />
@@ -44,7 +62,7 @@ export default function LatestCrops() {
               </p>
 
               <Link to={`/crop/${crop._id}`}>
-                <button className="mt-4 w-full bg-green-200 hover:bg-green-300 transition-colors text-black font-medium py-2 rounded-md">
+                <button className="mt-4 w-full bg-green-400 hover:bg-green-500 transition-colors text-black font-medium py-2 rounded-md">
                   View Details
                 </button>
               </Link>
