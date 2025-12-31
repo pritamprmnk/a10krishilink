@@ -1,7 +1,5 @@
 Project Name : KrishiLink
 
-Live URL : https://krishilink10.netlify.app/
-
 
 Five bullet points to feature my website :
 (i).A social agro networking platform where farmers, traders, and consumers can connect, share crop posts, and collaborate directly without a traditional e-commerce system.
