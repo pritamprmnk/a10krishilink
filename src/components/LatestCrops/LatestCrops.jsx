@@ -10,7 +10,7 @@ export default function LatestCrops() {
     fetch("https://krishi-link-server-eight.vercel.app/allcrops")
       .then((res) => res.json())
       .then((data) => {
-        const lastSix = data.slice(0, 6);
+        const lastSix = data.slice(0, 8);
         setLatestCrops(lastSix);
         setLoading(false);
       })
@@ -34,7 +34,7 @@ export default function LatestCrops() {
         Latest Crops
       </h2>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-4">
         {latestCrops.map((crop) => (
           <div
             key={crop._id}

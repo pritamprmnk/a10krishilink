@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Loader from "../../components/Loader/Loader";
+import { FiSearch } from "react-icons/fi";
 
 export default function AllCropsPage() {
   const [cropsData, setCropsData] = useState([]);
@@ -44,17 +45,24 @@ export default function AllCropsPage() {
     <div className="p-8 max-w-7xl mx-auto text-gray-900 bg-white">
       <h1 className="text-3xl font-bold mb-6 text-green-500">All Crops</h1>
 
-      <input
-        type="text"
-        placeholder="🔍 Search for crops..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full md:w-1/2 lg:w-1/4 p-3 bg-gray-50 rounded-xl mb-6 shadow-lg 
-                   focus:outline-none focus:ring-2 focus:ring-green-400"
-      />
+<div className="relative w-full md:w-1/2 lg:w-1/4 mb-6">
+  <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+  
+  <input
+    type="text"
+    placeholder="Search for crops..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="w-full p-3 pl-10 bg-gray-50 rounded-xl shadow-lg 
+               focus:outline-none focus:ring-2 focus:ring-green-400 transition-all duration-200"
+  />
+</div>
 
       {filteredCrops.length === 0 ? (
-        <p className="text-gray-600 text-lg">No results found.</p>
+        <div className="flex justify-center items-center min-h-[150px]">
+           <p className="text-gray-600 text-lg">No results found.</p>
+        </div>
+
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-7">
           {filteredCrops.map((crop) => (

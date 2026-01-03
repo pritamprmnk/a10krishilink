@@ -92,8 +92,8 @@ export default function MyPosts({ userEmail }) {
 
   return (
     <div className="px-6 py-10">
-      <h1 className="text-3xl font-bold mb-8 text-green-500 tracking-wide">
-        🌾 My Crop Posts
+      <h1 className="text-3xl font-bold mb-6 text-green-500  tracking-wide">
+        My Posts
       </h1>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
