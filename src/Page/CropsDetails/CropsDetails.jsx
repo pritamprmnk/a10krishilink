@@ -472,7 +472,7 @@ console.log("LS authUser: ", localStorage.getItem("authUser"));
               No interests yet for this crop.
             </div>
           ) : (
-            <div className="overflow-x-auto shadow-lg rounded-xl border">
+            <div className="overflow-x-auto shadow-lg rounded-xl ">
               <table className="w-full">
                 <thead className="bg-gray-200 text-left">
                   <tr>
@@ -487,7 +487,7 @@ console.log("LS authUser: ", localStorage.getItem("authUser"));
 
                 <tbody>
                   {interests.map((i) => (
-                    <tr key={i._id} className="border-t hover:bg-gray-50">
+                    <tr key={i._id} className=" hover:bg-gray-100">
                       <td className="p-4 font-medium">
                         {i.userName || i.buyerName || i.buyer || "—"}
                       </td>
