@@ -118,13 +118,11 @@ export default function MyInterests() {
       <h1 className="text-3xl font-bold mb-6 text-green-500  tracking-wide">
         My Interests
       </h1>
-
-      <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
-        <div className="mb-5 flex justify-end">
+    <div className="mb-6 flex justify-end">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="border py-2 rounded-md shadow-md text-gray-700 bg-white"
+            className="py-2 px-1 text-sm rounded-md shadow-sm text-gray-700 bg-white  border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-400 hover:border-green-400 transition-all duration-200"
           >
             <option value="latest">Latest First</option>
             <option value="oldest">Oldest First</option>
@@ -132,6 +130,9 @@ export default function MyInterests() {
             <option value="az">Crop Name A–Z</option>
           </select>
         </div>
+
+      <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
+
 
         {interests.length === 0 ? (
           <div className="py-14 text-center text-gray-500 italic text-lg">
